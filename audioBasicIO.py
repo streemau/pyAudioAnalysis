@@ -2,6 +2,7 @@ import os, glob, eyed3, ntpath, shutil, numpy
 import scipy.io.wavfile as wavfile
 import pydub
 from pydub import AudioSegment
+from urllib import urlretrieve
 
 def convertDirMP3ToWav(dirName, Fs, nC, useMp3TagsAsName = False):
     '''
@@ -128,3 +129,35 @@ def stereo2mono(x):
             else:
                 return -1
 
+def read_m4a_url(url):
+    try:
+        filename = '/tmp/{}'.format(url.split('/')[-1])
+        urlretrieve(url, filename)
+        try:
+            audiofile = AudioSegment.from_file(filename, format='m4a')
+        except:
+            print "Error: file not found or other I/O error. (pydub AudioSegment.from_file)"
+            return (-1, -1)
+        finally:
+            os.remove(filename)
+
+        if audiofile.sample_width==2:                
+            data = numpy.fromstring(audiofile._data, numpy.int16)
+        elif audiofile.sample_width==4:
+            data = numpy.fromstring(audiofile._data, numpy.int32)
+        else:
+            print "Error: sample width: {}".format(audiofile.sample_width)
+            return (-1, -1)
+        Fs = audiofile.frame_rate
+        x = []
+        for chn in xrange(audiofile.channels):
+            x.append(data[chn::audiofile.channels])
+        x = numpy.array(x).T
+    except IOError:
+        print "Error: file not found or other I/O error."
+        return (-1, -1)
+
+    if x.ndim==2 and x.shape[1]==1:
+        x = x.flatten()
+
+    return (Fs, x)
