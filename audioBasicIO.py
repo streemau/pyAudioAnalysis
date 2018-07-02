@@ -129,14 +129,15 @@ def stereo2mono(x):
             else:
                 return -1
 
-def read_m4a_url(url):
+def read_from_url(url):
+    extension = os.path.splitext(url)[1].lower()[1:]
     try:
         filename = '/tmp/{}'.format(url.split('/')[-1])
         urlretrieve(url, filename)
         try:
-            audiofile = AudioSegment.from_file(filename, format='m4a')
+            audiofile = AudioSegment.from_file(filename, format=extension)
         except:
-            print "Error: file not found or other I/O error. (pydub AudioSegment.from_file)"
+            print "Error: file not found or other I/O error. (pydub AudioSegment.from_file({}, format={}))".format(filename, extension)
             return (-1, -1)
         finally:
             os.remove(filename)

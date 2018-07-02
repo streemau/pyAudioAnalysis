@@ -18,6 +18,7 @@ import sklearn.cluster
 import hmmlearn.hmm
 import cPickle
 import glob
+import urlparse
 
 """ General utility functions """
 
@@ -502,9 +503,8 @@ def mtFileClassification(inputFile, modelName, modelType, plotResults=False, gtF
         print "Model " + modelName + " contains long-term music features (beat etc) and cannot be used in segmentation"
         return (-1, -1, -1, -1)
 
-    extension = extension = os.path.splitext(inputFile)[1].lower()
-    if extension == '.m4a':
-        [Fs, x] = audioBasicIO.read_m4a_url(inputFile)
+    if urlparse.urlparse(inputFile).scheme != '':
+        [Fs, x] = audioBasicIO.read_from_url(inputFile)
     else:
         [Fs, x] = audioBasicIO.readAudioFile(inputFile)        # load input file
     if Fs == -1:                                           # could not read file
