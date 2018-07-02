@@ -3,6 +3,7 @@ import scipy.io.wavfile as wavfile
 import pydub
 from pydub import AudioSegment
 from urllib import urlretrieve
+from utilities import PyAudioAnalysisException
 
 def convertDirMP3ToWav(dirName, Fs, nC, useMp3TagsAsName = False):
     '''
@@ -131,32 +132,26 @@ def stereo2mono(x):
 
 def read_from_url(url):
     extension = os.path.splitext(url)[1].lower()[1:]
+    filename = '/tmp/{}'.format(url.split('/')[-1])
+    urlretrieve(url, filename)
     try:
-        filename = '/tmp/{}'.format(url.split('/')[-1])
-        urlretrieve(url, filename)
-        try:
-            audiofile = AudioSegment.from_file(filename, format=extension)
-        except:
-            print "Error: file not found or other I/O error. (pydub AudioSegment.from_file({}, format={}))".format(filename, extension)
-            return (-1, -1)
-        finally:
-            os.remove(filename)
+        audiofile = AudioSegment.from_file(filename, format=extension)
+    except Exception as e:
+        raise PyAudioAnalysisException('Error: AudioSegment.from_file failed\nurl: {}\n message: {}'.format(url, str(e)))
+    finally:
+        os.remove(filename)
 
-        if audiofile.sample_width==2:                
-            data = numpy.fromstring(audiofile._data, numpy.int16)
-        elif audiofile.sample_width==4:
-            data = numpy.fromstring(audiofile._data, numpy.int32)
-        else:
-            print "Error: sample width: {}".format(audiofile.sample_width)
-            return (-1, -1)
-        Fs = audiofile.frame_rate
-        x = []
-        for chn in xrange(audiofile.channels):
-            x.append(data[chn::audiofile.channels])
-        x = numpy.array(x).T
-    except IOError:
-        print "Error: file not found or other I/O error."
-        return (-1, -1)
+    if audiofile.sample_width==2:                
+        data = numpy.fromstring(audiofile._data, numpy.int16)
+    elif audiofile.sample_width==4:
+        data = numpy.fromstring(audiofile._data, numpy.int32)
+    else:
+        raise PyAudioAnalysisException('Error: sample width is {} not 2 or 4'.format(audiofile.sample_width))
+    Fs = audiofile.frame_rate
+    x = []
+    for chn in xrange(audiofile.channels):
+        x.append(data[chn::audiofile.channels])
+    x = numpy.array(x).T
 
     if x.ndim==2 and x.shape[1]==1:
         x = x.flatten()

@@ -101,3 +101,5 @@ def peakdet(v, delta, x = None):
  
     return numpy.array(maxtab), numpy.array(mintab)
 
+class PyAudioAnalysisException(Exception):
+    pass
