@@ -1,8 +1,9 @@
 import os, glob, eyed3, ntpath, shutil, numpy
 import scipy.io.wavfile as wavfile
 import pydub
+import requests
 from pydub import AudioSegment
-from urllib import urlretrieve
+# from urllib import urlretrieve
 from utilities import PyAudioAnalysisException
 
 def convertDirMP3ToWav(dirName, Fs, nC, useMp3TagsAsName = False):
@@ -129,6 +130,14 @@ def stereo2mono(x):
                 return ( (x[:,1] / 2) + (x[:,0] / 2) )
             else:
                 return -1
+
+def urlretrieve(url, filename):
+    response = requests.get(url)
+
+    with open(filename, 'wb') as f:
+        f.write(response.content)
+
+    response.close()
 
 def read_from_url(url):
     extension = os.path.splitext(url)[1].lower()[1:]
