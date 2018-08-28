@@ -1,13 +1,10 @@
 from __future__ import print_function
 import os, glob, eyed3, ntpath, shutil, numpy
-<<<<<<< HEAD:audioBasicIO.py
 import scipy.io.wavfile as wavfile
 import pydub
 import requests
-=======
->>>>>>> upstream/master:pyAudioAnalysis/audioBasicIO.py
 from pydub import AudioSegment
-from utilities import PyAudioAnalysisException
+from pyAudioAnalysis.utilities import PyAudioAnalysisException
 
 def convertDirMP3ToWav(dirName, Fs, nC, useMp3TagsAsName = False):
     '''
@@ -164,7 +161,7 @@ def read_from_url(url):
         raise PyAudioAnalysisException('Error: sample width is {} not 2 or 4'.format(audiofile.sample_width))
     Fs = audiofile.frame_rate
     x = []
-    for chn in xrange(audiofile.channels):
+    for chn in range(audiofile.channels):
         x.append(data[chn::audiofile.channels])
     x = numpy.array(x).T
 

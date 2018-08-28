@@ -16,7 +16,7 @@ import sklearn.cluster
 import hmmlearn.hmm
 import pickle as cPickle
 import glob
-import urlparse
+from urllib.parse import urlparse
 
 """ General utility functions """
 
@@ -525,8 +525,8 @@ def mtFileClassification(input_file, model_name, model_type,
                                      "segmentation")
         return (-1, -1, -1, -1)
 
-    if urlparse.urlparse(input_file).scheme != '':
-        [Fs, x] = audioBasicIO.read_from_url(input_file)
+    if urlparse(input_file).scheme != '':
+        [fs, x] = audioBasicIO.read_from_url(input_file)
     else:
         [fs, x] = audioBasicIO.readAudioFile(input_file)       # load input file
     if fs == -1:                                           # could not read file
