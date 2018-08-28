@@ -132,12 +132,13 @@ def stereo2mono(x):
                 return -1
 
 def urlretrieve(url, filename):
-    response = requests.get(url)
+    with requests.Session() as s:
+        a = requests.adapters.HTTPAdapter(max_retries=3)
+        s.mount('https://', a)
+        response = s.get(url)
 
     with open(filename, 'wb') as f:
         f.write(response.content)
-
-    response.close()
 
 def read_from_url(url):
     extension = os.path.splitext(url)[1].lower()[1:]
