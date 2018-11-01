@@ -523,7 +523,10 @@ def mtFileClassification(input_file, model_name, model_type,
                                      "(beat etc) and cannot be used in "
                                      "segmentation")
         return (-1, -1, -1, -1)
-    [fs, x] = audioBasicIO.readAudioFile(input_file)       # load input file
+    if type(input_file) is str:
+        [fs, x] = audioBasicIO.readAudioFile(input_file)       # load input file
+    else:
+        fs, x = audioBasicIO.processAudioFile(input_file)
     if fs == -1:                                           # could not read file
         return (-1, -1, -1, -1)
     x = audioBasicIO.stereo2mono(x)                        # convert stereo (if) to mono
