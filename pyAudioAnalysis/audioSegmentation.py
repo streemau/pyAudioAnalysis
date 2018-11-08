@@ -7,13 +7,13 @@ from pyAudioAnalysis import audioFeatureExtraction as aF
 from pyAudioAnalysis import audioTrainTest as aT
 from pyAudioAnalysis import audioBasicIO
 from scipy.spatial import distance
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import sklearn.discriminant_analysis
 import csv
 import os.path
 import sklearn
 import sklearn.cluster
-import hmmlearn.hmm
+# import hmmlearn.hmm
 import pickle as cPickle
 import glob
 

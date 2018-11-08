@@ -1,5 +1,6 @@
 from __future__ import print_function
-import os, glob, eyed3, ntpath, shutil, numpy
+# import os, glob, eyed3, ntpath, shutil, numpy
+import os, glob, ntpath, shutil, numpy
 from pydub import AudioSegment
 
 def convertDirMP3ToWav(dirName, Fs, nC, useMp3TagsAsName = False):
