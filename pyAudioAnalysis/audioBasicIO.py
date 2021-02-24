@@ -133,7 +133,10 @@ def read_audio_generic(input_file):
     sampling_rate = -1
     signal = np.array([])
     try:
-        audiofile = AudioSegment.from_file(input_file)
+        if isinstance(input_file, AudioSegment):
+            audiofile = input_file
+        else:
+            audiofile = AudioSegment.from_file(input_file)
         data = np.array([])
         if audiofile.sample_width == 2:
             data = numpy.fromstring(audiofile._data, numpy.int16)
